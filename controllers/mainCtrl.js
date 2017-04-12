@@ -1,12 +1,12 @@
 let user = require('../user');
 module.exports = {
-    getName: function (req, res) {
+    getName: (req, res) => {
         res.status(200).json({name: user.name});
     },
-    getLocation: function (req, res) {
+    getLocation: (req, res) => {
         res.status(200).json({location: user.location});
     },
-    getOccupations: function (req, res) {
+    getOccupations: (req, res) => {
         if (req.query.order) {
             let v = req.query.order;
             if (v === 'asc') {
@@ -22,10 +22,10 @@ module.exports = {
             res.status(200).json({occupations: user.occupations});
         }
     },
-    getHobbies: function (req, res) {
+    getHobbies: (req, res) => {
         res.status(200).json({hobbies: user.hobbies});
     },
-    getHobbiesByType: function (req, res) {
+    getHobbiesByType: (req, res) => {
         let arr = [];
         for (let i = 0; i < user.hobbies.length; i++) {
             if (req.params.type === user.hobbies[i].type) {
@@ -34,10 +34,10 @@ module.exports = {
         }
         res.status(200).json({hobbies: arr});
     },
-    getFamily: function (req, res) {
+    getFamily: (req, res) => {
         res.status(200).json(user.family);
     },
-    getFamilyByGender: function (req, res) {
+    getFamilyByGender: (req, res) => {
         let arr = [];
         let arr2 = [];
         if (req.params.gender === 'male') {
@@ -56,7 +56,7 @@ module.exports = {
             res.status(200).json({females: arr2});
         }
     },
-    getRestaurants: function (req, res) {
+    getRestaurants: (req, res) => {
         if (req.query.rating >= 2) {
             let arr = [];
             for (let i = 0; i < user.restaurants.length; i++) {
