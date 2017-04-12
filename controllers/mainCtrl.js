@@ -1,4 +1,5 @@
 let user = require('../user');
+let skillz = require('../skillz');
 module.exports = {
     getName: (req, res) => {
         res.status(200).json({name: user.name});
@@ -10,37 +11,42 @@ module.exports = {
         if (req.query.order) {
             let v = req.query.order;
             if (v === 'asc') {
-                let arr = user.occupations.sort((a, b) => {
-                    return a - b
-                });
+                let arr = user.occupations.sort();
                 res.status(200).json({occupations: arr});
             } else if (v === 'desc') {
-                res.status(200).json({occupations: user.occupations.reverse()});
+                console.log('running desc');
+                res.status(200).json({occupations: user.occupations.sort().reverse()});
             }
         }
         else {
             res.status(200).json({occupations: user.occupations});
         }
     },
-    getHobbies: (req, res) => {
-        res.status(200).json({hobbies: user.hobbies});
+    getLatestOccupation: (req, res) => {
+        res.status(200).json({'latest occupation': user.occupations[user.occupations.length - 1]});
     },
-    getHobbiesByType: (req, res) => {
-        let arr = [];
-        for (let i = 0; i < user.hobbies.length; i++) {
-            if (req.params.type === user.hobbies[i].type) {
-                arr.push(user.hobbies[i]);
+    getHobbies: (req, res) => { /* */
+        if (req.params.type) {
+            let arr = [];
+            for (let i = 0; i < user.hobbies.length; i++) {
+                if (req.params.type === user.hobbies[i].type) {
+                    arr.push(user.hobbies[i]);
+                }
             }
+            res.status(200).json({hobbies: arr});
+        } else {
+            res.status(200).json({hobbies: user.hobbies});
         }
-        res.status(200).json({hobbies: arr});
     },
     getFamily: (req, res) => {
+
         res.status(200).json(user.family);
     },
     getFamilyByGender: (req, res) => {
         let arr = [];
         let arr2 = [];
         if (req.params.gender === 'male') {
+            console.log(req.params.gender)
             for (let i = 0; i < user.family.length; i++) {
                 if (req.params.gender === user.family[i].gender) {
                     arr.push(user.family[i]);
@@ -56,7 +62,7 @@ module.exports = {
             res.status(200).json({females: arr2});
         }
     },
-    getRestaurants: (req, res) => {
+    getRestaurants: (req, res) => {   /* */
         if (req.query.rating >= 2) {
             let arr = [];
             for (let i = 0; i < user.restaurants.length; i++) {
@@ -75,7 +81,66 @@ module.exports = {
             res.status(200).json({restaurants: arr});
         } else {
             res.status(200).json({restaurants: user.restaurants});
-
         }
+    },
+    updateName: (req, res) => {
+        user.name = req.body.name;
+        res.status(200).json(user.name);
+    },
+    updateLocation: (req, res) => {
+        user.location = req.body.location;
+        res.status(200).json(user.location);
+    },
+    addHobbie: (req, res) => {
+        user.hobbies.push({name: req.body.name, type: req.body.type});
+        res.status(200).json(user.hobbies);
+    },
+    addOccupation: (req, res) => {
+        user.occupations.push(req.body);
+        res.status(200).json(user.occupations);
+
+    },
+    deleteLastOccupation: (req, res) => {
+        res.status(200).json(user.occupations.pop());
+    },
+    addFamilyMember: (req, res) => {
+        user.family.push(req.body);
+        res.status(200).json(user.family);
+    },
+    addRestaurant: (req, res) => {
+        user.restaurants.push(req.body);
+        res.status(200).json({
+            name: user.restaurants.name,
+            type: user.restaurants.type,
+            rating: user.restaurants.rating
+        });
+    },
+    deleteRestaurantByRating: function (req, res) {
+        console.log(typeof req.params.rating);
+        for (let i = 0; i < user.restaurants.length; i++) {
+            if (req.params.rating == user.restaurants[i].rating) {
+                console.log('runnings');
+                user.restaurants.splice(i, 1);
+                console.log(user.restaurants);
+            }
+        }
+        res.status(200).json(user.restaurants);
+    },
+    getSkillz: function (req, res) {
+        if (req.query.experience) {
+            let x = req.query;
+            let arr = skillz.filter(a => {
+                if (x.experience === a.experience) {
+                    return true;
+                }
+            });
+            res.status(200).json(arr);
+        }else {
+            res.status(200).json(skillz);
+        }
+    },
+    addSkill: function (req, res) {
+        let v = skillz[skillz.length -1].id + 1
+        res.status(200).json(skillz.push({v:req.id, name:req.name, experience: req.experience}));
     }
 }

@@ -1,7 +1,7 @@
 let user = {
         name: 'bro',
         location: 'antartica',
-        occupations: ['penguin fishing, ice fishing, scientific lab operations'],
+        occupations: ['penguin fishing', 'ice fishing', 'scientific lab operations', 'being cool', 'construction'],
         hobbies: [
             {
                 name: 'music producer',
